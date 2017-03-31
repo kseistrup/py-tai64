@@ -5,9 +5,8 @@
         a datetime.datetime object at UTC.
     utc2tai(datetime.datetime.now())
         returns a datetime.datetime object representing TAI from a datetime.datetime
-        object at UTC. 
+        object at UTC.
 """
-
 
 from datetime import datetime, timedelta
 from operator import itemgetter
@@ -22,41 +21,41 @@ class TAI64DecodeError(Exception):
 def __conversion_table():
     """ returns [datetime, value] ordered reverse by date
         where value == seconds between TAI and UTC
-    
+
     Example:
     >>> __conversion_table()[-1]
     (datetime.datetime(1972, 1, 1, 0, 0), 10.0)
     """
     # update this table as new values become known
     # source: ftp://maia.usno.navy.mil/ser7/tai-utc.dat
-    conversion_table = [(datetime(1972, 01,  1), 10.0),
-                        (datetime(1972, 07,  1), 11.0),
-                        (datetime(1973, 01,  1), 12.0),
-                        (datetime(1974, 01,  1), 13.0),
-                        (datetime(1975, 01,  1), 14.0),
-                        (datetime(1976, 01,  1), 15.0),
-                        (datetime(1977, 01,  1), 16.0),
-                        (datetime(1978, 01,  1), 17.0),
-                        (datetime(1979, 01,  1), 18.0),
-                        (datetime(1980, 01,  1), 19.0),
-                        (datetime(1981, 07,  1), 20.0),
-                        (datetime(1982, 07,  1), 21.0),
-                        (datetime(1983, 07,  1), 22.0),
-                        (datetime(1985, 07,  1), 23.0),
-                        (datetime(1988, 01,  1), 24.0),
-                        (datetime(1990, 01,  1), 25.0),
-                        (datetime(1991, 01,  1), 26.0),
-                        (datetime(1992, 07,  1), 27.0),
-                        (datetime(1993, 07,  1), 28.0),
-                        (datetime(1994, 07,  1), 29.0),
-                        (datetime(1996, 01,  1), 30.0),
-                        (datetime(1997, 07,  1), 31.0),
-                        (datetime(1999, 01,  1), 32.0),
-                        (datetime(2006, 01,  1), 33.0),
-                        (datetime(2009, 01,  1), 34.0),
-                        (datetime(2012, 07,  1), 35.0),
-                        (datetime(2015, 07,  1), 36.0),
-                        (datetime(2017, 01,  1), 37.0),
+    conversion_table = [(datetime(1972, 1, 1), 10.0),
+                        (datetime(1972, 7, 1), 11.0),
+                        (datetime(1973, 1, 1), 12.0),
+                        (datetime(1974, 1, 1), 13.0),
+                        (datetime(1975, 1, 1), 14.0),
+                        (datetime(1976, 1, 1), 15.0),
+                        (datetime(1977, 1, 1), 16.0),
+                        (datetime(1978, 1, 1), 17.0),
+                        (datetime(1979, 1, 1), 18.0),
+                        (datetime(1980, 1, 1), 19.0),
+                        (datetime(1981, 7, 1), 20.0),
+                        (datetime(1982, 7, 1), 21.0),
+                        (datetime(1983, 7, 1), 22.0),
+                        (datetime(1985, 7, 1), 23.0),
+                        (datetime(1988, 1, 1), 24.0),
+                        (datetime(1990, 1, 1), 25.0),
+                        (datetime(1991, 1, 1), 26.0),
+                        (datetime(1992, 7, 1), 27.0),
+                        (datetime(1993, 7, 1), 28.0),
+                        (datetime(1994, 7, 1), 29.0),
+                        (datetime(1996, 1, 1), 30.0),
+                        (datetime(1997, 7, 1), 31.0),
+                        (datetime(1999, 1, 1), 32.0),
+                        (datetime(2006, 1, 1), 33.0),
+                        (datetime(2009, 1, 1), 34.0),
+                        (datetime(2012, 7, 1), 35.0),
+                        (datetime(2015, 7, 1), 36.0),
+                        (datetime(2017, 1, 1), 37.0),
                         # add new values here
                        ]
     conversion_table.sort(key=itemgetter(0), reverse=True)
@@ -66,7 +65,7 @@ def __conversion_table():
 def __tai_seconds(date, table=__conversion_table()):
     """ returns seconds of TAI-offset from UTC at date given.
         Works only on dates later than 01.01.1972.
-    
+
     Example:
         >>> __tai_seconds(datetime(1992, 6, 2, 8, 7, 9))
         26.0
@@ -82,7 +81,7 @@ def __tai_seconds(date, table=__conversion_table()):
 def __tai2utc(date):
     """ converts datetime.datetime TAI to datetime.datetime UTC.
         Works only on dates later than 01.01.1972.
-    
+
     Example
         >>> __tai2utc(datetime(1992, 6, 2, 8, 7, 9))
         datetime.datetime(1992, 6, 2, 8, 6, 43)
@@ -106,14 +105,14 @@ def utc2tai(date):
 def decode_tai64n(hexstring, basedate=datetime(1970, 1, 1)):
     """ returns a datetime.datetime (UTC) object from a tai64(n) string.
         Works only on dates after 01.01.1972.
-        
+
         Args
             hexstring: string containig TAI64(n) value
             basedate: DO NOT USE (speeds up repeated use of this function)
-        
+
         Returns
             a datetime.datetime object at UTC
-        
+
         Example
             (from http://cr.yp.to.mirror.dogmap.org/libtai/tai64.html)
             >>> decode_tai64n("400000002a2b2c2d")
@@ -131,7 +130,7 @@ def decode_tai64n(hexstring, basedate=datetime(1970, 1, 1)):
     except:
         raise TAI64DecodeError("'%s' not a valid hex value." % hexstring)
     # we decode only dates later than 01.01.1972
-    seconds = tai_int - 4611686018427387904L
+    seconds = tai_int - 4611686018427387904
     if seconds < 0:
         raise TAI64DecodeError("I won't decode gone millenia "
                                "(i.e. nothing prior to 01.01.1972).")
@@ -141,5 +140,3 @@ def decode_tai64n(hexstring, basedate=datetime(1970, 1, 1)):
 if __name__ == '__main__':
     import doctest
     doctest.testmod()
-
-
